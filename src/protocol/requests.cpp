@@ -122,4 +122,21 @@ namespace myactuator_rmd {
     return static_cast<float>(getAs<std::int32_t>(4))/100.0f;
   }
 
+  SetMotionModeRequest::SetMotionModeRequest(std::uint16_t const motor_id, std::int16_t p_des, std::int16_t v_des,
+                         std::uint16_t kp, std::uint16_t kd, std::int16_t t_ff)
+    : SingleMotorRequest{} {
+        auto const can_id = 0x400 + motor_id;
+        setAt(can_id, 0);  // Set CAN ID
+        
+        // Bit manipulation to set p_des, v_des, kp, kd, t_ff according to the detailed breakdown
+        setAt(static_cast<std::uint8_t>((p_des >> 8) & 0xFF), 1); // p_des upper 8 bits
+        setAt(static_cast<std::uint8_t>(p_des & 0xFF), 2);        // p_des lower 8 bits
+        setAt(static_cast<std::uint8_t>((v_des >> 4) & 0xFF), 3); // v_des upper 8 bits
+        setAt(static_cast<std::uint8_t>(((v_des & 0xF) << 4) | ((kp >> 8) & 0xF)), 4); // v_des lower 4 bits + kp upper 4 bits
+        setAt(static_cast<std::uint8_t>(kp & 0xFF), 5);           // kp lower 8 bits
+        setAt(static_cast<std::uint8_t>((kd >> 4) & 0xFF), 6);    // kd upper 8 bits
+        setAt(static_cast<std::uint8_t>(((kd & 0xF) << 4) | ((t_ff >> 8) & 0xF)), 7); // kd lower 4 bits + t_ff upper 4 bits
+        setAt(static_cast<std::uint8_t>(t_ff & 0xFF), 8);         // t_ff lower 8 bits
+    }
+
 }

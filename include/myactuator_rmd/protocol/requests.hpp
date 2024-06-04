@@ -401,6 +401,51 @@ namespace myactuator_rmd {
       float getSpeed() const noexcept;
   };
 
+    /**\class SetMotionModeRequest
+   * \brief
+   *    Request for setting the absolute position of the actuator with a given maximum speed
+  */
+  class SetMotionModeRequest: public SingleMotorRequest<CommandType::ABSOLUTE_POSITION_CLOSED_LOOP_CONTROL> {
+    public:
+      /**\fn SetMotionModeRequest
+       * \brief
+       *    Class constructor
+       * 
+       * \param[in] position
+       *    The position set-point in degree
+       * \param[in] max_speed
+       *    The maximum speed for the motion in degree per second
+      */
+      SetMotionModeRequest(std::uint16_t const motor_id, std::int16_t p_des, std::int16_t v_des, std::uint16_t kp, std::uint16_t kd, std::int16_t t_ff);
+      SetMotionModeRequest() = delete;
+      SetMotionModeRequest(SetMotionModeRequest const&) = default;
+      SetMotionModeRequest& operator = (SetMotionModeRequest const&) = default;
+      SetMotionModeRequest(SetMotionModeRequest&&) = default;
+      SetMotionModeRequest& operator = (SetMotionModeRequest&&) = default;
+      using SingleMotorRequest::SingleMotorRequest;
+
+      /**\fn getMaxSpeed
+       * \brief
+       *    Get the maximum speed
+       * 
+       * \return
+       *    The maximum speed for the motion in degree per second
+      */
+      [[nodiscard]]
+      float getDesiredVelocity() const noexcept;
+
+      /**\fn getPosition
+       * \brief
+       *    Get the position
+       * 
+       * \return
+       *    The position set-point in degree
+      */
+      [[nodiscard]]
+      float getDesiredPosition() const noexcept;
+      
+  };
+
   using ShutdownMotorRequest = SingleMotorRequest<CommandType::SHUTDOWN_MOTOR>;
   using StopMotorRequest = SingleMotorRequest<CommandType::STOP_MOTOR>;
 
